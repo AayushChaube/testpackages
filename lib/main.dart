@@ -34,7 +34,8 @@ class MyStatefullWidget extends StatefulWidget {
 
 class _MyStatefullWidgetState extends State<MyStatefullWidget> {
   double progress = 0;
-  var speed = 0;
+  double speed = 0;
+  int diffByte = 0;
 
   void calculateProgress(int received, int total) {
     var result = (received / total) * 100;
@@ -80,7 +81,20 @@ class _MyStatefullWidgetState extends State<MyStatefullWidget> {
                   'D:/dummy.pdf',
                   onReceiveProgress: (current, total) {
                     calculateProgress(current, total);
-                    // calculateSpeed(current);
+                    Timer.periodic(
+                      const Duration(
+                        seconds: 3,
+                      ),
+                      (t) {
+                        var result = 0;
+                        setState(() {
+                          result = current - diffByte;
+                          speed = result / 1024;  //bytes to kilobytes
+                          diffByte = current;
+                          print('Speed:   $speed');
+                        });
+                      },
+                    );
                   },
                   deleteOnError: true,
                 );
